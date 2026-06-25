@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36603.0 d17.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CellcomServer", "CellcomServer\CellcomServer.csproj", "{BB27608F-0B65-423E-A52B-68D7F7F13E02}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CellcomClient", "CellcomClient\CellcomClient.csproj", "{82C5F673-089E-4E99-9289-98B5DB5F5F8C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BB27608F-0B65-423E-A52B-68D7F7F13E02}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BB27608F-0B65-423E-A52B-68D7F7F13E02}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BB27608F-0B65-423E-A52B-68D7F7F13E02}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BB27608F-0B65-423E-A52B-68D7F7F13E02}.Release|Any CPU.Build.0 = Release|Any CPU
+		{82C5F673-089E-4E99-9289-98B5DB5F5F8C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{82C5F673-089E-4E99-9289-98B5DB5F5F8C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{82C5F673-089E-4E99-9289-98B5DB5F5F8C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{82C5F673-089E-4E99-9289-98B5DB5F5F8C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {77BAF908-7BA5-46E2-8F66-E1A555FFC66F}
+	EndGlobalSection
+EndGlobal
