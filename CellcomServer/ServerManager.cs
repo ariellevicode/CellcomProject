@@ -51,57 +51,78 @@ namespace CellcomServer
             {
                 try
                 {
+                    
                     string incomingMessage = port.ReadLine();
                     Console.WriteLine("[received on " + port.PortName + "]: " + incomingMessage);
 
-                    string[] parts = incomingMessage.Split(new char[] { '<', '>' }, StringSplitOptions.RemoveEmptyEntries);
-
-                    if (parts.Length == 2)
+                    
+                    if (TryParseMessage(incomingMessage, out string clientId, out string command))
                     {
-                        string clientId = parts[0];
-                        string command = parts[1];
-
-                        if (command == "JOIN")
-                        {
-                            for (int i = 1; i <= 10; i++)
-                            {
-                                Console.WriteLine(i);
-                            }
-                            port.WriteLine("<" + clientId + ">DONE");
-                        }
-                        else if (command == "NEW")
-                        {
-                            if (currentCallToken != null)
-                            {
-                                currentCallToken.Cancel();
-                            }
-
-                            currentCallToken = new CancellationTokenSource();
-                            var token = currentCallToken.Token;
-
-                            Task.Run(async () =>
-                            {
-                                while (!token.IsCancellationRequested)
-                                {
-                                    port.WriteLine("<" + clientId + ">CELLCOM");
-                                    await Task.Delay(1000);
-                                }
-                            });
-                        }
-                        else if (command == "STOP")
-                        {
-                            if (currentCallToken != null)
-                            {
-                                currentCallToken.Cancel();
-                                currentCallToken = null;
-                                port.WriteLine("<" + clientId + ">BYE");
-                            }
-                        }
+                        
+                        HandleCommand(clientId, command, port, ref currentCallToken);
                     }
                 }
                 catch (Exception)
                 {
                     break;
+                }
+            }
+        }
+
+        
+        private bool TryParseMessage(string message, out string clientId, out string command)
+        {
+            clientId = string.Empty;
+            command = string.Empty;
+
+            string[] parts = message.Split(new char[] { '<', '>' }, StringSplitOptions.RemoveEmptyEntries);
+
+            if (parts.Length == 2)
+            {
+                clientId = parts[0];
+                command = parts[1];
+                return true;
+            }
+            return false;
+        }
+
+        
+        private void HandleCommand(string clientId, string command, SerialPort port, ref CancellationTokenSource currentCallToken)
+        {
+            if (command == "JOIN")
+            {
+                for (int i = 1; i <= 10; i++)
+                {
+                    Console.WriteLine(i);
+                }
+                port.WriteLine("<" + clientId + ">DONE");
+            }
+            else if (command == "NEW")
+            {
+                if (currentCallToken != null)
+                {
+                    currentCallToken.Cancel();
+                }
+
+                currentCallToken = new CancellationTokenSource();
+                var token = currentCallToken.Token;
+
+                Task.Run(async () =>
+                {
+                    while (!token.IsCancellationRequested)
+                    {
+                        port.WriteLine("<" + clientId + ">CELLCOM");
+                        await Task.Delay(1000);
+                    }
+                });
+            }
+            else if (command == "STOP")
+            {
+                if (currentCallToken != null)
+                {
+                    currentCallToken.Cancel();
+                    currentCallToken = null;
+                    port.WriteLine("<" + clientId + ">BYE");
                 }
             }
         }
