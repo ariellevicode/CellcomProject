@@ -37,20 +37,29 @@ namespace CellcomClient
                 }
             }
 
-            Console.WriteLine("commands: <ID>JOIN, <ID>NEW, <ID>STOP");
-
             
-            Thread listenerThread = new Thread(() => ListenToServer(clientPort));
-
-            
-            listenerThread.IsBackground = true;
-
-            listenerThread.Start();
-
-            while (true)
+            try
             {
-                string command = Console.ReadLine();
-                clientPort.WriteLine(command);
+                Console.WriteLine("commands: <ID>JOIN, <ID>NEW, <ID>STOP");
+
+                Thread listenerThread = new Thread(() => ListenToServer(clientPort));
+                listenerThread.IsBackground = true;
+                listenerThread.Start();
+
+                while (true)
+                {
+                    string command = Console.ReadLine();
+                    clientPort.WriteLine(command);
+                }
+            }
+            finally
+            {
+                
+                if (clientPort != null && clientPort.IsOpen)
+                {
+                    clientPort.Close();
+                    Console.WriteLine("\nPort safely closed. Goodbye!");
+                }
             }
         }
 
