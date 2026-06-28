@@ -47,19 +47,20 @@ namespace CellcomServer
         {
             CancellationTokenSource currentCallToken = null;
 
+            
+            object portLock = new object();
+
             while (port.IsOpen)
             {
                 try
                 {
-                    
                     string incomingMessage = port.ReadLine();
                     Console.WriteLine("[received on " + port.PortName + "]: " + incomingMessage);
 
-                    
                     if (TryParseMessage(incomingMessage, out string clientId, out string command))
                     {
                         
-                        HandleCommand(clientId, command, port, ref currentCallToken);
+                        HandleCommand(clientId, command, port, ref currentCallToken, portLock);
                     }
                 }
                 catch (Exception)
@@ -69,7 +70,7 @@ namespace CellcomServer
             }
         }
 
-        
+
         private bool TryParseMessage(string message, out string clientId, out string command)
         {
             clientId = string.Empty;
@@ -86,8 +87,9 @@ namespace CellcomServer
             return false;
         }
 
+
         
-        private void HandleCommand(string clientId, string command, SerialPort port, ref CancellationTokenSource currentCallToken)
+        private void HandleCommand(string clientId, string command, SerialPort port, ref CancellationTokenSource currentCallToken, object portLock)
         {
             if (command == "JOIN")
             {
@@ -95,7 +97,12 @@ namespace CellcomServer
                 {
                     Console.WriteLine(i);
                 }
-                port.WriteLine("<" + clientId + ">DONE");
+
+                
+                lock (portLock)
+                {
+                    port.WriteLine("<" + clientId + ">DONE");
+                }
             }
             else if (command == "NEW")
             {
@@ -111,7 +118,11 @@ namespace CellcomServer
                 {
                     while (!token.IsCancellationRequested)
                     {
-                        port.WriteLine("<" + clientId + ">CELLCOM");
+                        
+                        lock (portLock)
+                        {
+                            port.WriteLine("<" + clientId + ">CELLCOM");
+                        }
                         await Task.Delay(1000);
                     }
                 });
@@ -122,7 +133,12 @@ namespace CellcomServer
                 {
                     currentCallToken.Cancel();
                     currentCallToken = null;
-                    port.WriteLine("<" + clientId + ">BYE");
+
+                    
+                    lock (portLock)
+                    {
+                        port.WriteLine("<" + clientId + ">BYE");
+                    }
                 }
             }
         }
