@@ -63,8 +63,9 @@ namespace CellcomServer
                         HandleCommand(clientId, command, port, ref currentCallToken, portLock);
                     }
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
+                    Console.WriteLine("[Error reading from " + port.PortName + "]: " + ex.Message);
                     break;
                 }
             }
