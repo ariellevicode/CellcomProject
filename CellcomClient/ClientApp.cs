@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO.Ports;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace CellcomClient
@@ -38,7 +39,13 @@ namespace CellcomClient
 
             Console.WriteLine("commands: <ID>JOIN, <ID>NEW, <ID>STOP");
 
-            Task.Run(() => ListenToServer(clientPort));
+            
+            Thread listenerThread = new Thread(() => ListenToServer(clientPort));
+
+            
+            listenerThread.IsBackground = true;
+
+            listenerThread.Start();
 
             while (true)
             {
